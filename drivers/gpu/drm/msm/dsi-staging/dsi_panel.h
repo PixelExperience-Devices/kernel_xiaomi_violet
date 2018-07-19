@@ -202,6 +202,8 @@ struct dsi_panel {
 
 	struct dsi_parser_utils utils;
 
+	int hbm_mode;
+
 	bool lp11_init;
 	bool ulps_feature_enabled;
 	bool ulps_suspend_enabled;
@@ -337,5 +339,7 @@ struct dsi_panel *dsi_panel_ext_bridge_get(struct device *parent,
 int dsi_panel_parse_esd_reg_read_configs(struct dsi_panel *panel);
 
 void dsi_panel_ext_bridge_put(struct dsi_panel *panel);
+
+int dsi_panel_apply_hbm_mode(struct dsi_panel *panel);
 
 #endif /* _DSI_PANEL_H_ */
