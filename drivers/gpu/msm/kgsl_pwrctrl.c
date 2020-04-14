@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2020, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2010-2019, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -2787,7 +2787,6 @@ static int _wake(struct kgsl_device *device)
 {
 	struct kgsl_pwrctrl *pwr = &device->pwrctrl;
 	int status = 0;
-	unsigned int state = device->state;
 
 	switch (device->state) {
 	case KGSL_STATE_SUSPEND:
@@ -2814,7 +2813,6 @@ static int _wake(struct kgsl_device *device)
 		/* Turn on the core clocks */
 		kgsl_pwrctrl_clk(device, KGSL_PWRFLAGS_ON, KGSL_STATE_ACTIVE);
 
-		if (state == KGSL_STATE_SLUMBER || state == KGSL_STATE_SUSPEND)
 		/*
 		 * No need to turn on/off irq here as it no longer affects
 		 * power collapse
