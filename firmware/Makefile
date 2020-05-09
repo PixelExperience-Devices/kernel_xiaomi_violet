@@ -11,6 +11,8 @@ fwabs := $(addprefix $(srctree)/,$(filter-out /%,$(fwdir)))$(filter /%,$(fwdir))
 fw-external-y := $(subst $(quote),,$(CONFIG_EXTRA_FIRMWARE))
 fw-shipped-$(CONFIG_TOUCHSCREEN_GOODIX_GTX8) += goodix_gt9886_cfg_f10.bin goodix_gt9886_fw_f10.bin
 fw-shipped-$(CONFIG_TOUCHSCREEN_NT36xxx_HOSTDL_SPI) += novatek_nt36672c_g7b_fw01.bin novatek_nt36672c_g7b_mp01.bin novatek_ts_fw.bin
+fw-shipped-$(CONFIG_TOUCHSCREEN_NVT_F7B) += novatek/shenchao_nt36672a_miui_f7b.bin
+fw-shipped-$(CONFIG_TOUCHSCREEN_NVT_F7B) += novatek/tianma_nt36672a_miui_f7b.bin
 
 fw-shipped-all := $(fw-shipped-y) $(fw-shipped-m) $(fw-shipped-)
 quiet_cmd_ihex  = IHEX    $@
