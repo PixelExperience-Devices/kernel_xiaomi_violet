@@ -14,12 +14,6 @@
 #include "violet-sm6150-touchscreen.dtsi"
 #include "violet-sm6150-usb.dtsi"
 
-/ {
-	aliases {
-		spi0 = "/soc/spi@a88000";
-	};
-};
-
 &firmware {
 	android {
 		vbmeta {
