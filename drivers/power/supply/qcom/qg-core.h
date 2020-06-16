@@ -76,7 +76,9 @@ struct qg_dt {
 	bool			qg_sleep_config;
 	bool			qg_fast_chg_cfg;
 	bool			fvss_enable;
+	bool			multi_profile_load;
 	bool			tcss_enable;
+	bool			bass_enable;
 };
 
 struct qg_esr_data {
@@ -93,10 +95,12 @@ struct qpnp_qg {
 	struct pmic_revid_data	*pmic_rev_id;
 	struct regmap		*regmap;
 	struct qpnp_vadc_chip	*vadc_dev;
+	struct soh_profile	*sp;
 	struct power_supply	*qg_psy;
 	struct class		*qg_class;
 	struct device		*qg_device;
 	struct cdev		qg_cdev;
+	struct device_node	*batt_node;
 	dev_t			dev_no;
 	struct work_struct	udata_work;
 	struct work_struct	scale_soc_work;
@@ -140,6 +144,7 @@ struct qpnp_qg {
 	bool			force_soc;
 	bool			fvss_active;
 	bool			tcss_active;
+	bool			bass_active;
 	int			charge_status;
 	int			charge_type;
 	int			chg_iterm_ma;
@@ -155,6 +160,8 @@ struct qpnp_qg {
 	int			ibat_tcss_entry;
 	int			soc_tcss;
 	int			tcss_entry_count;
+	int			max_fcc_limit_ma;
+	int			bsoc_bass_entry;
 	u32			fifo_done_count;
 	u32			wa_flags;
 	u32			seq_no;
@@ -183,6 +190,7 @@ struct qpnp_qg {
 	int			sys_soc;
 	int			last_adj_ssoc;
 	int			recharge_soc;
+	int			batt_age_level;
 	struct alarm		alarm_timer;
 	u32			sdam_data[SDAM_MAX];
 
