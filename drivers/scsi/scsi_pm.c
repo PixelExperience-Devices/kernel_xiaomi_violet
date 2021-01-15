@@ -164,6 +164,7 @@ static int scsi_bus_prepare(struct device *dev)
 		/* Wait until async scanning is finished */
 		scsi_complete_async_scans();
 	}
+
 	return 0;
 }
 
