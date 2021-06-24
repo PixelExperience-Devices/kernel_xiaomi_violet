@@ -3534,6 +3534,7 @@ out:
 	return match;
 }
 
+int audit_update_lsm_rules(void){};
 static int (*aurule_callback)(void) = audit_update_lsm_rules;
 
 static int aurule_avc_callback(u32 event)
