@@ -5142,7 +5142,8 @@ int hdd_vdev_destroy(struct hdd_adapter *adapter)
 	     policy_mgr_mode_specific_connection_count(hdd_ctx->psoc,
 		policy_mgr_convert_device_mode_to_qdf_type(
 			adapter->device_mode), NULL) == 1) ||
-	    !policy_mgr_get_connection_count(hdd_ctx->psoc))
+	    (!policy_mgr_get_connection_count(hdd_ctx->psoc) &&
+	     !hdd_is_any_sta_connecting(hdd_ctx)))
 		policy_mgr_check_and_stop_opportunistic_timer(hdd_ctx->psoc,
 							      adapter->vdev_id);
 
@@ -16424,13 +16425,16 @@ static void hdd_driver_unload(void)
  */
 static int hdd_module_init(void)
 {
-  int ret;
+	int ret;
+
 	ret = wlan_hdd_state_ctrl_param_create();
 	if (ret)
 		pr_err("wlan_hdd_state_create:%x\n", ret);
 
 	return ret;
 }
+
+#undef hdd_fln
 
 /**
  * hdd_module_exit() - Exit function
