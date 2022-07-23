@@ -118,4 +118,3 @@ obj-$(CONFIG_TOUCHSCREEN_NVT_F7B)	+= lct_tp_grip_area.o
 obj-$(CONFIG_TOUCHSCREEN_RASPBERRYPI_FW)	+= raspberrypi-ts.o
 obj-$(CONFIG_TOUCHSCREEN_IQS5XX)	+= iqs5xx.o
 obj-$(CONFIG_TOUCHSCREEN_ST)	+= st/
-obj-$(CONFIG_TOUCHSCREEN_FTS)	+= focaltech_touch/
