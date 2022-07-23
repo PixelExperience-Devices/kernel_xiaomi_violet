@@ -51,7 +51,7 @@ compile()
 	                CLANG_TRIPLE="aarch64-linux-gnu-" \
 	                CROSS_COMPILE="aarch64-linux-gnu-" \
 	                CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
-	                -j4
+                        -j$(nproc --all)
 }
 
 completion() 
