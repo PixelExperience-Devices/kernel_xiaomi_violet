@@ -39,7 +39,6 @@
 #include <linux/splice.h>
 #include <linux/in6.h>
 #include <linux/if_packet.h>
-#include <linux/llist.h>
 #include <net/flow.h>
 
 /* The interface for checksum offload between the stack and networking drivers
@@ -676,7 +675,6 @@ struct sk_buff {
 		};
 		struct rb_node		rbnode; /* used in netem, ip4 defrag, and tcp stack */
 		struct list_head	list;
-	        struct llist_node	ll_node;
 	};
 
 	union {
@@ -1341,17 +1339,6 @@ static inline void skb_zcopy_abort(struct sk_buff *skb)
 		sock_zerocopy_put_abort(uarg);
 		skb_shinfo(skb)->tx_flags &= ~SKBTX_ZEROCOPY_FRAG;
 	}
-}
-
-static inline void skb_mark_not_on_list(struct sk_buff *skb)
-{
-	skb->next = NULL;
-}
-
-static inline void skb_list_del_init(struct sk_buff *skb)
-{
-	__list_del_entry(&skb->list);
-	skb_mark_not_on_list(skb);
 }
 
 /**
