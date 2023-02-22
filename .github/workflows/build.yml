@@ -29,6 +29,6 @@ jobs:
         run: |
           wget https://raw.githubusercontent.com/akhilnarang/scripts/master/setup/android_build_env.sh
           sudo -E bash android_build_env.sh
-          git clone --depth=1 https://github.com/SuperiorOS-Devices/kernel_xiaomi_violet.git -b thirteen violet
+          git clone --depth=1 https://github.com/Joker-V2/kernel_xiaomi_violet.git -b thirteen violet
           cd violet
           sudo -E bash build.sh
