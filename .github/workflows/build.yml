@@ -31,4 +31,7 @@ jobs:
           sudo -E bash android_build_env.sh
           git clone --depth=1 https://github.com/Joker-V2/kernel_xiaomi_violet.git -b thirteen violet
           cd violet
-          sudo -E bash build.sh
+          sudo -E python build.py
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+          CHATID: ${{ secrets.CHATID }}

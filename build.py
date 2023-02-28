@@ -1,8 +1,18 @@
-#!/bin/bash
+import os
+import sys
+import subprocess
+import string
+import random
+
+bashfile=''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+bashfile='/tmp/'+bashfile+'.sh'
+
+f = open(bashfile, 'w')
+s = """#!/bin/bash
 
 # Telegram Config
-TOKEN=""  # Bot Token
-CHATID="" # Chat id of telegram channel/group
+TOKEN=$(/usr/bin/env python -c "import os; print(os.environ.get('TOKEN'))")
+CHATID=$(/usr/bin/env python -c "import os; print(os.environ.get('CHATID'))")
 BOT_MSG_URL="https://api.telegram.org/bot${TOKEN}/sendMessage"
 BOT_BUILD_URL="https://api.telegram.org/bot${TOKEN}/sendDocument"
 BOT_STICKER_URL="https://api.telegram.org/bot${TOKEN}/sendSticker"
@@ -14,9 +24,9 @@ time=$(TZ="Asia/Kolkata" date "+%a %b %d %r")
 
 # send saxx msgs to tg
 tg_post_msg() {
-  curl -s -X POST "$BOT_MSG_URL" -d chat_id="$CHATID" \
-    -d "disable_web_page_preview=true" \
-    -d "parse_mode=html" \
+  curl -s -X POST "$BOT_MSG_URL" -d chat_id="$CHATID" \\
+    -d "disable_web_page_preview=true" \\
+    -d "parse_mode=html" \\
     -d text="$1"
 
 }
@@ -28,22 +38,18 @@ tg_post_build()
 	MD5CHECK=$(md5sum "$1" | cut -d' ' -f1)
 
 	#Show the Checksum alongwith caption
-	curl --progress-bar -F document=@"$1" "$BOT_BUILD_URL" \
-	-F chat_id="$CHATID"  \
-	-F "disable_web_page_preview=true" \
-	-F "parse_mode=Markdown" \
-	-F caption="$2 | *MD5 Checksum : *\`$MD5CHECK\`"
+	curl --progress-bar -F document=@"$1" "$BOT_BUILD_URL" \\
+	-F chat_id="$CHATID"  \\
+	-F "disable_web_page_preview=true" \\
+	-F "parse_mode=Markdown" \\
+	-F caption="$2 | *MD5 Checksum : *\\`$MD5CHECK\\`"
 }
 
 # send a nice sticker ro act as a sperator between builds
 tg_post_sticker() {
-  curl -s -X POST "$BOT_STICKER_URL" -d chat_id="$CHATID" \
+  curl -s -X POST "$BOT_STICKER_URL" -d chat_id="$CHATID" \\
     -d sticker="CAACAgUAAxkBAAECHIJgXlYR8K8bYvyYIpHaFTJXYULy4QACtgIAAs328FYI4H9L7GpWgR4E"
 }
-
-#start off by sending a trigger msg
-tg_post_sticker
-tg_post_msg "<b>Kernel Build Triggered ⌛</b>%0A<b>===============</b>%0A<b>Kernel : </b><code>$kernel_name</code>%0A<b>Machine : </b><code>$os</code>%0A<b>Cores : </b><code>$cores</code>%0A<b>Time : </b><code>$time</code>"
 
 kernel_dir="${PWD}"
 CCACHE=$(command -v ccache)
@@ -59,8 +65,11 @@ export CONFIG_FILE="vendor/violet-perf_defconfig"
 export ARCH="arm64"
 export KBUILD_BUILD_HOST=SuperiorOS
 export KBUILD_BUILD_USER=Joker-V2
-
 export PATH="$CLANG_DIR/bin:$PATH"
+
+#start off by sending a trigger msg
+tg_post_sticker
+tg_post_msg "<b>Kernel Build Triggered ⌛</b>%0A<b>===============</b>%0A<b>Kernel : </b><code>$kernel_name</code>%0A<b>Machine : </b><code>$os</code>%0A<b>Cores : </b><code>$cores</code>%0A<b>Time : </b><code>$time</code>"
 
 if ! [ -d "$TC_DIR" ]; then
     echo "Toolchain not found! Cloning to $TC_DIR..."
@@ -72,10 +81,10 @@ if ! [ -d "$TC_DIR" ]; then
 fi
 
 # Colors
-NC='\033[0m'
-RED='\033[0;31m'
-LRD='\033[1;31m'
-LGR='\033[1;32m'
+NC='\\033[0m'
+RED='\\033[0;31m'
+LRD='\\033[1;31m'
+LGR='\\033[1;32m'
 
 make_defconfig()
 {
@@ -87,15 +96,15 @@ compile()
 {
     cd ${kernel_dir}
     echo -e ${LGR} "######### Compiling kernel #########${NC}"
-    make -j$(nproc --all) \
-    O=out \
-    ARCH=${ARCH}\
-    CC="ccache clang" \
-    CLANG_TRIPLE="aarch64-linux-gnu-" \
-    CROSS_COMPILE="aarch64-linux-gnu-" \
-    CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
-    LLVM=1 \
-    LLVM_IAS=1 \
+    make -j$(nproc --all) \\
+    O=out \\
+    ARCH=${ARCH}\\
+    CC="ccache clang" \\
+    CLANG_TRIPLE="aarch64-linux-gnu-" \\
+    CROSS_COMPILE="aarch64-linux-gnu-" \\
+    CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \\
+    LLVM=1 \\
+    LLVM_IAS=1 \\
     2>&1 | tee error.log
 
 }
@@ -121,7 +130,7 @@ completion() {
     DIFF=$(($END - $START))
     BUILDTIME=$(echo $((${END} - ${START})) | awk '{print int ($1/3600)" Hours:"int(($1/60)%60)"Minutes:"int($1%60)" Seconds"}')
     tg_post_build "$HOME/$zip_name" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-    tg_post_msg "<code>Compiled successfully</code>"
+    tg_post_msg "<code>Compiled successfully✅</code>"
     curl --upload-file $HOME/$zip_name https://free.keep.sh
     echo
     echo -e ${LGR} "############################################"
@@ -129,7 +138,7 @@ completion() {
     echo -e ${LGR} "############################################${NC}"
   else
     tg_post_build "$kernel_dir/error.log" "$CHATID" "Debug Mode Logs"
-    tg_post_msg "<code>Compilation failed</code>"
+    tg_post_msg "<code>Compilation failed❎</code>"
     echo -e ${RED} "############################################"
     echo -e ${RED} "##         This Is Not Epic :'(           ##"
     echo -e ${RED} "############################################${NC}"
@@ -137,8 +146,16 @@ completion() {
 }
 make_defconfig
 if [ $? -eq 0 ]; then
-  tg_post_msg "<code>Defconfig generated successfully</code>"
+  tg_post_msg "<code>Defconfig generated successfully✅</code>"
 fi
 compile
 completion
 cd ${kernel_dir}
+"""
+f.write(s)
+f.close()
+os.chmod(bashfile, 0o755)
+bashcmd=bashfile
+for arg in sys.argv[1:]:
+  bashcmd += ' '+arg
+subprocess.call(bashcmd, shell=True)
