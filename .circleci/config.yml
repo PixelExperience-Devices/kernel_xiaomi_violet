@@ -1,0 +1,30 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: mrkhan007/aosp:latest
+    steps:
+
+      - checkout
+      - restore_cache:
+          keys:
+            - build-cache-{{ .Branch }}-{{ checksum "build.py" }}
+
+      - run:
+          name: Install packages
+          command: |
+            sudo apt-get update
+            sudo apt-get -y install mkisofs git python bc cpio
+
+      - run:
+          name: Build kernel
+          command: |
+            git clone https://github.com/Joker-V2/kernel_xiaomi_violet -b thirteen --depth=1 violet
+            cd violet
+            python3 build.py
+      - save_cache:
+          paths:
+            - /home/circleci/violet
+          key: build-cache-{{ .Branch }}-{{ checksum "build.py" }}
+
