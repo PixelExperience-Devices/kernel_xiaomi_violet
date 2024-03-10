@@ -49,10 +49,6 @@
     reg = <0x0 0x9d000000 0x0 0x0100000>;
 };
 
-&disp_rdump_memory{
-    reg = <0x0 0x9d100000 0x0 0x01000000>;
-};
-
 &reserved_memory {
     ramoops: ramoops@a1600000 {
         compatible = "ramoops";
